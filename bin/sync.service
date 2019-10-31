@@ -1,0 +1,19 @@
+[Unit]
+Description = SyncService
+After = network.target
+
+[Service]
+PIDFile = /run/syncservice/syncservice.pid
+User = root
+Group = root
+WorkingDirectory = /opt
+ExecStartPre = /bin/mkdir /run/syncservice
+ExecStartPre = /bin/chown -R root:root /run/syncservice
+ExecStart = /bin/bash /opt/rsync-file.sh
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+ExecStopPost = /bin/rm -rf /run/syncservice
+PrivateTmp = true
+
+[Install]
+WantedBy = multi-user.target
